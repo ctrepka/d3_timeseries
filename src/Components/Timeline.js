@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { select, min, max, scaleTime, scaleLinear, axisBottom } from 'd3';
+import { select, min, max, scaleTime, scaleLinear, axisBottom, axisRight } from 'd3';
 import { useResizeObserver } from './UseResizeObserver';
 
 
@@ -17,7 +17,7 @@ const Timeline = ({data, highlight}) => {
 
         const xScale = scaleTime()
             .domain([minDate, maxDate])
-            .range([0, dimensions.width])
+            .range([0, dimensions.width - 24])
 
         const minTime = min(data, stamp => ( (new Date(stamp.EndTime) - new Date(stamp.StartTime)) / 1000 / 60 ) )
         const maxTime = max(data, stamp => ( (new Date(stamp.EndTime) - new Date(stamp.StartTime)) / 1000 / 60 ) )
@@ -41,6 +41,11 @@ const Timeline = ({data, highlight}) => {
             .style('transform', `translateY(${dimensions.height}px)`)
             .call(xAxis)
 
+        const yAxis = axisRight(yScale)
+        svg.select('.y-axis')
+            .style('transform', `translateX(${dimensions.width - 24 }px)` )
+            .call(yAxis)
+
     }, [data, dimensions, highlight]);
 
     return (
@@ -49,6 +54,7 @@ const Timeline = ({data, highlight}) => {
                 <g className="x-axis">
 
                 </g>
+                <g className='y-axis'></g>
             </svg>
         </div>
     )
